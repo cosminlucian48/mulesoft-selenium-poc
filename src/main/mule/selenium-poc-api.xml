@@ -1,0 +1,44 @@
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:java="http://www.mulesoft.org/schema/mule/java" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+	http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+	http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
+	
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config">
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	
+	<!-- Manual trigger flow - call via HTTP GET http://localhost:8081/trigger -->
+	<flow name="main_flow">
+		<http:listener doc:name="Listener" config-ref="HTTP_Listener_config" path="/trigger"/>
+		<flow-ref doc:name="Flow Reference" name="selenium_sub_flow"/>
+		<set-payload value='{"status": "completed"}' doc:name="Set Payload"/>
+	</flow>
+	
+	<!-- Original scheduler flow - DISABLED (commented out) -->
+	<!-- 
+    <flow name="scheduler_flow">
+        <scheduler doc:name="Scheduler" doc:id="qwhdck">
+            <scheduling-strategy>
+                <fixed-frequency/>
+            </scheduling-strategy>
+        </scheduler>
+        <flow-ref doc:name="Flow Reference" name="scheduler_flow_sub"/>
+    </flow>
+    -->
+    
+    <!-- Business logic extracted to sub-flow -->
+    <sub-flow name="selenium_sub_flow">
+        <logger level="INFO" message='Entry sub-flow' doc:name="Logger" doc:id="xqqttj" />
+        <java:invoke-static doc:name="Invoke static" doc:id="ulchiq" class="com.selenium.poc.SeleniumPocUtil" method="openPlaygroundAndGetTitle()"/>
+		<choice doc:name="Choice" doc:id="vlusry">
+			<when expression="#[payload == true]" doc:name="Text Found" doc:id="whentrue">
+				<logger level="INFO" message='SUCCESS: Expected text "Sign in to your account" was found on the page' doc:name="Log Success" doc:id="logsuccess"/>
+			</when>
+			<otherwise doc:name="Text Not Found" doc:id="otherwise">
+				<logger level="ERROR" message='FAILURE: Expected text "Sign in to your account" was NOT found on the page' doc:name="Log Failure" doc:id="logfailure"/>
+			</otherwise>
+		</choice>
+		<logger level="INFO" message='Exit sub-flow' doc:name="Logger" doc:id="qjshrt" />
+    </sub-flow>
+</mule>
