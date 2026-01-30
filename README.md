@@ -27,13 +27,9 @@ This proof-of-concept showcases how to integrate Selenium WebDriver within a Mul
 
 Before running this application, ensure you have:
 
-1. **MuleSoft Runtime** (Mule 4.x) installed
+1. **Anypoint Studio** installed
 2. **Java 17** or higher
-3. **Maven** 3.x or higher
-4. **Google Chrome** browser installed
-5. **ChromeDriver** installed and available in your system PATH
-   - Download from: https://chromedriver.chromium.org/
-   - Ensure ChromeDriver version matches your Chrome browser version
+3. **Google Chrome** browser installed
 
 ## Project Structure
 
@@ -77,37 +73,32 @@ The application exposes an HTTP endpoint on:
 - **Port**: `8081`
 - **Path**: `/trigger`
 
-## Installation
+## Getting Started
 
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd selenium-poc-api
-```
+### Import Project into Anypoint Studio
 
-2. Install ChromeDriver (if not already installed):
-```bash
-# macOS (using Homebrew)
-brew install chromedriver
+1. Open Anypoint Studio
+2. Go to **File** → **Import**
+3. Select **Anypoint Studio** → **Anypoint Project from File System**
+4. Click **Next**
+5. Browse to the project directory and select it
+6. Click **Finish**
 
-# Or download manually from:
-# https://chromedriver.chromium.org/
-```
+Alternatively, you can use Git Smart Import:
+1. Go to **File** → **Import**
+2. Select **Anypoint Studio** → **Git Smart Import**
+3. Follow the wizard steps
+4. At the last step, **cancel** the import
+5. Then import the project locally:
+   - Go to **File** → **Import**
+   - Select **Anypoint Studio** → **Anypoint Project from File System**
+   - Browse to the project directory and click **Finish**
 
-3. Build the project:
-```bash
-mvn clean package
-```
+### Run the Application
 
-## Running the Application
-
-### Start the Mule Application
-
-```bash
-mvn mule:run
-```
-
-The application will start on port 8081.
+1. Right-click on the project in Package Explorer
+2. Select **Run As** → **Mule Application**
+3. The application will start on port 8081
 
 ### Trigger the Selenium Workflow
 
@@ -189,36 +180,6 @@ To test different URLs or validation text:
 1. Add new methods to `SeleniumPocUtil.java`
 2. Create corresponding flows in `selenium-poc-api.xml`
 3. Configure new HTTP endpoints or schedulers as needed
-
-## Troubleshooting
-
-### ChromeDriver Issues
-
-**Error**: `WebDriver not found` or `ChromeDriver executable not found`
-
-**Solution**: 
-- Ensure ChromeDriver is installed and in your PATH
-- Verify ChromeDriver version matches your Chrome browser version
-
-### Port Conflict
-
-**Error**: `Address already in use: 8081`
-
-**Solution**: 
-- Change the port in [selenium-poc-api.xml](src/main/mule/selenium-poc-api.xml):
-```xml
-<http:listener-connection host="0.0.0.0" port="8082" />
-```
-
-### Browser Not Closing
-
-**Note**: The browser is intentionally left open for testing purposes (see `SeleniumPocUtil.java` line 50-52). To enable automatic browser cleanup, uncomment:
-
-```java
-if (driver != null) {
-    driver.quit();
-}
-```
 
 ## License
 
